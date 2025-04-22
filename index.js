@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 10000;
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
+
 const ordersFile = "orders.json";
 if (!fs.existsSync(ordersFile)) fs.writeFileSync(ordersFile, "[]");
 
