@@ -1,143 +1,66 @@
-<!-- public/widget.html -->
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>مساعد ذكي</title>
+  <meta charset="UTF-8" />
+  <title>مساعد الطلبات الذكي</title>
   <style>
     body {
-      margin: 0;
       font-family: sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+      direction: rtl;
     }
-
-    .chat-button {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      padding: 12px 20px;
-      border-radius: 50px;
-      cursor: pointer;
-      z-index: 9999;
-    }
-
-    .chat-box {
-      display: none;
-      flex-direction: column;
-      position: fixed;
-      bottom: 80px;
-      left: 20px;
-      width: 300px;
-      height: 400px;
+    #chat {
       background: white;
       border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-      overflow: hidden;
-      z-index: 9999;
+      padding: 15px;
+      max-width: 100%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-
-    .chat-header {
-      background-color: #4CAF50;
-      color: white;
-      padding: 10px;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .chat-messages {
-      flex: 1;
-      padding: 10px;
+    #messages {
+      height: 300px;
       overflow-y: auto;
-    }
-
-    .chat-input {
-      display: flex;
-      padding: 10px;
-      border-top: 1px solid #ddd;
-    }
-
-    .chat-input input {
-      flex: 1;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    .chat-input button {
-      margin-left: 5px;
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      padding: 8px 12px;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .message {
       margin-bottom: 10px;
+      border: 1px solid #eee;
+      padding: 10px;
+      background: #fafafa;
     }
-
-    .user {
-      text-align: right;
-      color: #333;
+    input, button {
+      padding: 10px;
+      font-size: 16px;
     }
-
-    .bot {
-      text-align: left;
-      color: #4CAF50;
+    button {
+      background: #0A7CFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
     }
   </style>
 </head>
 <body>
-
-<button class="chat-button" onclick="toggleChat()">💬 مساعد</button>
-
-<div class="chat-box" id="chatBox">
-  <div class="chat-header">المساعد الذكي</div>
-  <div class="chat-messages" id="messages"></div>
-  <div class="chat-input">
-    <input type="text" id="userInput" placeholder="اكتب رسالتك...">
-    <button onclick="sendMessage()">إرسال</button>
+  <div id="chat">
+    <h3>مساعد الطلبات الذكي</h3>
+    <div id="messages"></div>
+    <input id="phone" placeholder="أدخل رقم جوالك (مثال: +9665xxxxxx)" style="width: 100%; margin-bottom: 10px;" />
+    <input id="msg" placeholder="اكتب رسالتك..." style="width: 100%; margin-bottom: 10px;" />
+    <button onclick="send()">إرسال</button>
   </div>
-</div>
 
-<script>
-  let phone = prompt("ادخل رقم جوالك لربط الطلبات:", "5XXXXXXXX");
-
-  function toggleChat() {
-    const chatBox = document.getElementById("chatBox");
-    chatBox.style.display = chatBox.style.display === "flex" ? "none" : "flex";
-  }
-
-  async function sendMessage() {
-    const input = document.getElementById("userInput");
-    const message = input.value.trim();
-    if (!message) return;
-
-    appendMessage("user", message);
-    input.value = "";
-
-    const response = await fetch("/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message, phone: "+966" + phone })
-    });
-
-    const data = await response.json();
-    appendMessage("bot", data.reply);
-  }
-
-  function appendMessage(sender, text) {
-    const messages = document.getElementById("messages");
-    const div = document.createElement("div");
-    div.className = `message ${sender}`;
-    div.textContent = text;
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-  }
-</script>
-
+  <script>
+    async function send() {
+      const message = document.getElementById("msg").value;
+      const phone = document.getElementById("phone").value;
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message, phone })
+      });
+      const data = await res.json();
+      const messages = document.getElementById("messages");
+      messages.innerHTML += `<div><b>أنت:</b> ${message}</div>`;
+      messages.innerHTML += `<div><b>المساعد:</b> ${data.reply}</div>`;
+      document.getElementById("msg").value = "";
+    }
+  </script>
 </body>
 </html>
