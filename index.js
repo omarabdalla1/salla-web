@@ -73,9 +73,10 @@ app.post("/chat", async (req, res) => {
 });
 
 // 🧠 واجهة المستخدم للدردشة
-app.get("/widget", (req, res) => {
+app.get("/chat-widget", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "widget.html"));
 });
+
 
 app.listen(PORT, () => {
   console.log(`🚀 السيرفر شغال على المنفذ ${PORT}`);
