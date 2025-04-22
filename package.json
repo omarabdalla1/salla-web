@@ -1,5 +1,5 @@
 {
-  "name": "salla-chatbot",
+  "name": "simple-chat-widget",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
