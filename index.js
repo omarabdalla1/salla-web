@@ -3,18 +3,20 @@ const express = require("express");
 const fs = require("fs");
 const bodyParser = require("body-parser");
 const { Configuration, OpenAIApi } = require("openai");
+const path = require("path");
 
 const app = express();
 const PORT = process.env.PORT || 10000;
 
 app.use(bodyParser.json());
+app.use(express.static("public"));
 
 const ordersFile = "orders.json";
 if (!fs.existsSync(ordersFile)) fs.writeFileSync(ordersFile, "[]");
 
 // 🔐 إعداد OpenAI API
 const configuration = new Configuration({
-  apiKey: "sk-ضع_مفتاحك_هنا"
+  apiKey: process.env.OPENAI_API_KEY || "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"
 });
 const openai = new OpenAIApi(configuration);
 
@@ -67,6 +69,11 @@ app.post("/chat", async (req, res) => {
 
   const aiReply = completion.data.choices[0].message.content;
   res.json({ reply: aiReply });
+});
+
+// 🧠 واجهة المستخدم للدردشة
+app.get("/chat-widget", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "widget.html"));
 });
 
 app.listen(PORT, () => {
