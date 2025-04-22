@@ -73,7 +73,7 @@ app.post("/chat", async (req, res) => {
 });
 
 // 🧠 واجهة المستخدم للدردشة
-app.get("/chat-widget", (req, res) => {
+app.get("/widget", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "widget.html"));
 });
 
