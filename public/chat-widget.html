@@ -1,4 +1,4 @@
-<!-- ✅ public/widget.html -->
+<!-- 📁 public/chat-widget.html -->
 <style>
 #chat-widget {
   position: fixed;
@@ -44,20 +44,19 @@
 </style>
 
 <div id="chat-widget">
-  <div id="chat-header">مساعد الطلبات</div>
+  <div id="chat-header">مساعد ذكي</div>
   <div id="chat-body"></div>
   <div id="chat-input">
-    <input type="text" id="msg" placeholder="اكتب رسالتك" />
-    <button onclick="send()">📩</button>
+    <input type="text" id="msg" placeholder="اكتب رسالتك..." />
+    <button onclick="send()">إرسال</button>
   </div>
 </div>
 
 <script>
-const phone = "+966559187865"; // ← استبدله برقم العميل الفعلي
-
 function appendMsg(sender, text) {
   const body = document.getElementById("chat-body");
   const msg = document.createElement("div");
+  msg.style.margin = "5px 0";
   msg.innerText = (sender === "user" ? "🧑‍💼: " : "🤖: ") + text;
   body.appendChild(msg);
   body.scrollTop = body.scrollHeight;
@@ -65,19 +64,19 @@ function appendMsg(sender, text) {
 
 async function send() {
   const input = document.getElementById("msg");
-  const text = input.value;
+  const text = input.value.trim();
   if (!text) return;
+
   appendMsg("user", text);
   input.value = "";
 
   const res = await fetch("/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: text, phone })
+    body: JSON.stringify({ message: text, phone: "+966559187865" }) // رقم مثال
   });
 
   const data = await res.json();
   appendMsg("bot", data.reply);
 }
 </script>
-
