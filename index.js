@@ -1,5 +1,7 @@
 // ✅ ملف: index.js
 const express = require("express");
+res.sendFile(path.join(__dirname, "public", "widget.html"));
+
 const fs = require("fs");
 const bodyParser = require("body-parser");
 const { Configuration, OpenAIApi } = require("openai");
