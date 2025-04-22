@@ -2,64 +2,75 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>مساعد الطلبات الذكي</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>مساعد الطلبات</title>
   <style>
     body {
       font-family: sans-serif;
       padding: 20px;
-      background: #f5f5f5;
-      direction: rtl;
+      background: #f4f4f4;
     }
-    #chat {
+    #chat-box {
+      width: 100%;
+      max-width: 500px;
+      margin: auto;
       background: white;
-      border-radius: 10px;
-      padding: 15px;
-      max-width: 100%;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
-    #messages {
-      height: 300px;
-      overflow-y: auto;
+    .msg {
       margin-bottom: 10px;
-      border: 1px solid #eee;
       padding: 10px;
-      background: #fafafa;
+      border-radius: 8px;
     }
+    .user { background: #e0f7fa; text-align: right; }
+    .bot { background: #f1f8e9; text-align: left; }
     input, button {
+      width: 100%;
       padding: 10px;
+      margin-top: 10px;
       font-size: 16px;
     }
     button {
-      background: #0A7CFF;
+      background: #4caf50;
       color: white;
       border: none;
-      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
     }
   </style>
 </head>
 <body>
-  <div id="chat">
-    <h3>مساعد الطلبات الذكي</h3>
-    <div id="messages"></div>
-    <input id="phone" placeholder="أدخل رقم جوالك (مثال: +9665xxxxxx)" style="width: 100%; margin-bottom: 10px;" />
-    <input id="msg" placeholder="اكتب رسالتك..." style="width: 100%; margin-bottom: 10px;" />
-    <button onclick="send()">إرسال</button>
+  <div id="chat-box">
+    <h2>🛍️ مساعد الطلبات</h2>
+    <input type="text" id="phone" placeholder="أدخل رقم الجوال (مثال: +9665xxxxxxx)" />
+    <input type="text" id="message" placeholder="اكتب سؤالك عن الطلب..." />
+    <button onclick="sendMessage()">إرسال</button>
+    <div id="chat-log"></div>
   </div>
 
   <script>
-    async function send() {
-      const message = document.getElementById("msg").value;
+    async function sendMessage() {
       const phone = document.getElementById("phone").value;
+      const message = document.getElementById("message").value;
+      const chatLog = document.getElementById("chat-log");
+
+      if (!phone || !message) return alert("يرجى تعبئة الحقول");
+
+      chatLog.innerHTML += `<div class="msg user">${message}</div>`;
+
       const res = await fetch("/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message, phone })
       });
+
       const data = await res.json();
-      const messages = document.getElementById("messages");
-      messages.innerHTML += `<div><b>أنت:</b> ${message}</div>`;
-      messages.innerHTML += `<div><b>المساعد:</b> ${data.reply}</div>`;
-      document.getElementById("msg").value = "";
+      chatLog.innerHTML += `<div class="msg bot">${data.reply}</div>`;
+      document.getElementById("message").value = "";
     }
   </script>
 </body>
