@@ -1,4 +1,5 @@
 // ✅ ملف: index.js
+app.use(express.static("public"));
 const express = require("express");
 const fs = require("fs");
 const bodyParser = require("body-parser");
